@@ -16,7 +16,7 @@
 
         // Load footnotes on widgets
         if ($axure.document.configuration.showAnnotations) {
-            $('#overflowMenuContainer').prepend('<div id="showNotesOption" class="showOption" style="order: 3"><div class="overflowOptionCheckbox"></div>Show Notes</div>');
+            $('#overflowMenuContainer').prepend('<div id="showNotesOption" class="showOption" style="order: 3"><div class="overflowOptionCheckbox"></div>Show Note Markers</div>');
         }
 
         createNotesOverlay();
@@ -122,8 +122,6 @@
                         var viewDimensions = {
                             h: h != '0' ? h : '',
                             scaleVal: $('.vpScaleOption').find('.selectedRadioButton').parent().attr('val'),
-                            scrollLeft: $('#clipFrameScroll').scrollLeft(),
-                            scrollTop: $('#clipFrameScroll').scrollTop(),
                             height: $('.rightPanel').height(),
                             panelWidthOffset: leftPanelOffset + rightPanelOffset
                         };

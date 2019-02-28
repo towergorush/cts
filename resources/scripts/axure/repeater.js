@@ -1383,7 +1383,7 @@ $axure.internal(function($ax) {
         var parentPanelInfo = getParentPanel(widgetId);
         if(parentPanelInfo) {
             var parentId = parentPanelInfo.parent;
-            _updateMobileScroll(parentId, parentPanelInfo.state);
+            _updateMobileScroll(parentId, parentPanelInfo.stateId);
             if(_updateFitPanel(parentId, parentPanelInfo.state)) _fitParentPanel(parentId);
             return;
         }
@@ -1403,21 +1403,22 @@ $axure.internal(function($ax) {
     };
     _dynamicPanelManager.fitParentPanel = _fitParentPanel;
 
-    var _updateMobileScroll = function (panelId, stateIndex) {
+    var _updateMobileScroll = _dynamicPanelManager.updateMobileScroll = function (panelId, stateId) {
         if (!panelId) return false;
-
-        //check if the page is in mobile mode
-        if ($('html').getNiceScroll().length == 0) return false;
 
         // Only update scroll if panel is scrollable
         if ($ax.dynamicPanelManager.isIdFitToContent(panelId)) return false;
         var obj = $obj(panelId);
-        if (!obj || obj.scrollbars == 'None') return false;
-
-        var stateId = $ax.repeater.applySuffixToElementId(panelId, '_state' + stateIndex);
+        if (!obj || obj.scrollbars.toLowerCase() == 'none') return false;
+        
         var stateQuery = $jobj(stateId);
-
-        stateQuery.getNiceScroll().remove();
+        $ax.adaptive.removeNiceScroll(stateQuery);
+        
+        //check if the page is in mobile mode
+        if (!$ax.adaptive.isDeviceMode()) {
+            stateQuery.css('cursor', '');
+            return false;
+        }
 
         var stateContentId = stateId + '_content';
         var childrenRect = $ax('#' + stateContentId).childrenBoundingRect();
@@ -1428,27 +1429,20 @@ $axure.internal(function($ax) {
 
         // Apply niceScroll and update cursor
         if (obj.isExpo) {
-            // $('#u1_state0').niceScroll('#u2_state0', { touchemulate: true, emulatetouch: true, touchbehavior: true, railmargin: { top: 50, bottom: 50 }, bouncescroll: false, scrollbarid: "testRail" });
-
             var headerHeight = obj.headerHeight ? obj.headerHeight : 0;
             var footerHeight = obj.footerHeight ? obj.footerHeight : 0;
 
-            stateQuery.niceScroll({ touchbehavior: true, bouncescroll: false, grabcursorenabled: false, railmargin: { top: headerHeight, bottom: footerHeight }, scrollbarid: stateId + "-sb" });
+            $ax.adaptive.addNiceScroll(stateQuery, { touchbehavior: true, bouncescroll: false, grabcursorenabled: false, railmargin: { top: headerHeight, bottom: footerHeight }, scrollbarid: stateId + "-sb" });
             stateQuery.find('.nicescroll-rails').css('margin-top', headerHeight + 'px');
         } else {
-            stateQuery.niceScroll('#' + stateContentId, { emulatetouch: true });
-            //stateQuery.getNiceScroll().resize();
-            //$stateContent.css('height', '');
+            $ax.adaptive.addNiceScroll(stateQuery, { emulatetouch: true });
         }
         
         stateQuery.css('cursor', 'url(resources/css/images/touch.cur), auto');
         stateQuery.css('cursor', 'url(resources/css/images/touch.svg) 32 32, auto');
-
     }
 
     _dynamicPanelManager.initMobileScroll = function () {
-        if ($('html').getNiceScroll().length == 0) return false;
-
         var scrollable = [];
         $ax('*').each(function (obj, elementId) {
             var scriptId = $ax.repeater.getScriptIdFromElementId(elementId);
@@ -1458,7 +1452,8 @@ $axure.internal(function($ax) {
         });
         for (var i = scrollable.length - 1; i >= 0; i--) {
             var panelId = scrollable[i];
-            _updateMobileScroll(panelId, 0);
+            var stateId = $ax.repeater.applySuffixToElementId(panelId, '_state0');
+            _updateMobileScroll(panelId, stateId);
         }
     };
     
@@ -1888,6 +1883,7 @@ $axure.internal(function($ax) {
                 var stateQuery = $jobj(stateId);
                 if(stateQuery.find('#' + (targetId || widgetId)).length != 0) {
                     retVal.state = i;
+                    retVal.stateId = stateId;
                     break;
                 }
             }

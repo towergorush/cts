@@ -929,10 +929,6 @@ $axure.internal(function($ax) {
                 $scrollable.animate({ scrollTop: targetTop, scrollLeft: targetLeft }, duration, easing);
             }
         }
-
-        if (IOS) {
-            $axure.messageCenter.postMessage('scrollToWidget', { top: targetTop, left: targetLeft, duration: duration, easing: easing });
-        }
     };
 
     $ax.public.fn.scroll = function(scrollOption) {

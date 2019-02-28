@@ -227,7 +227,7 @@
         if($ax.features.supports.mobile) {
             var touchCount = 0;
             var lastTouch = Date.now();
-            $('html').on('touchstart',
+            $('html').first().on('touchstart',
                 (function (e) {
                     var now = Date.now();
                     if(now - lastTouch < 375) {
@@ -244,7 +244,7 @@
 
             // Block IOS stalling second tap.
             // Stop third click from also clicking mobile card
-            $('html').on('touchend', function (e) {
+            $('html').first().on('touchend', function (e) {
                 if(touchCount === 3) {
                     touchCount = 0;
                     e.preventDefault();
