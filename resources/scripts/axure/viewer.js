@@ -175,13 +175,17 @@ $axure.internal(function ($ax) {
         var jObj = _getElementIdFromTarget(element);
         if (jObj.length > 0) {
           var id = jObj.attr('id');
-          var axObj = $ax('#' + id);
-          var rect = axObj.pageBoundingRect();
-          var style = $ax.style.computeFullStyle(id, $ax.style.generateState(id), $ax.adaptive.currentViewId);
-          style.text = axObj.text();
-          return { 'id': id, 'rect': rect, 'style': style };
+          return $axure.getRectAndStyleById(id);
         }
         return undefined;
+    }
+
+    $axure.getRectAndStyleById = function (id) {
+        var axObj = $ax('#' + id);
+        var rect = axObj.pageBoundingRect();
+        var style = $ax.style.computeFullStyle(id, $ax.style.generateState(id), $ax.adaptive.currentViewId);
+        style.text = axObj.text();
+        return { 'id': id, 'rect': rect, 'style': style };
     }
 
     var _getElementIdFromTarget = function (target) {

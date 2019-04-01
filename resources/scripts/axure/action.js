@@ -1914,7 +1914,8 @@
         eventInfo.image = true;
         for(var i = 0; i < action.imagesToSet.length; i++) {
             var imgInfo = action.imagesToSet[i];
-            imgInfo = view ? imgInfo.adaptive[view] : imgInfo.base;
+            if (view && imgInfo.adaptive[view]) imgInfo = imgInfo.adaptive[view];
+            else imgInfo = imgInfo.base;
             var elementIds = $ax.getElementIdsFromPath(action.imagesToSet[i].objectPath, eventInfo);
 
             for(var j = 0; j < elementIds.length; j++) {

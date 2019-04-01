@@ -183,7 +183,7 @@
         $axure.messageCenter.addMessageListener(function (message, data) {
             //var messageData = { id: elementId, x: event.pageX, y: event.pageY }
             if (message == 'toggleAnnDialog') {
-                _toggleAnnDialog(data.id, data.x, data.y);
+                _toggleAnnDialog(data.id, data.x, data.y, data.page);
             }
         });
 
@@ -197,8 +197,8 @@
         });
     }
 
-    function getWidgetNotesHtml(ownerId) {
-        var pageForNotes = $axure.page;
+    function getWidgetNotesHtml(ownerId, page) {
+        var pageForNotes = page || $axure.page;
         var widgetNoteUi = '';
 
         widgetNoteUi += "<div data-ownerid='" + ownerId + "' class='closeNotesDialog'></div>";
@@ -238,7 +238,7 @@
 
     var maxZIndex = 1;
     var dialogs = {};
-    var _toggleAnnDialog = function (id, srcLeft, srcTop) {
+    var _toggleAnnDialog = function (id, srcLeft, srcTop, page) {
 
         if(dialogs[id]) {
             var $dialog = dialogs[id];
@@ -281,7 +281,7 @@
         
         var $dialog = $('<div class="notesDialog"></div>')
             .appendTo('#notesOverlay')
-            .html(getWidgetNotesHtml(id));     
+            .html(getWidgetNotesHtml(id, page));     
 
         $dialog.css({ 'left': left, 'top': top, 'z-index': maxZIndex });
 

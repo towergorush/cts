@@ -1020,7 +1020,11 @@ $axure.internal(function ($ax) {
             var map = dObj.interactionMap;
             // Attach synthetic drag and swipe events
             if(map && (map.onDragStart || map.onDrag || map.onDragDrop || map.onSwipeLeft || map.onSwipeRight || map.onSwipeUp || map.onSwipeDown)) {
-                $element.bind($ax.features.eventNames.mouseDownName, function(e) { $ax.drag.StartDragWidget(e.originalEvent, elementId); });
+                $element.bind($ax.features.eventNames.mouseDownName,
+                    function (e) {
+                        if (!e.originalEvent.donotdrag) $ax.registerTouchCount(e);
+                        $ax.drag.StartDragWidget(e.originalEvent, elementId);
+                    });
             }
 
             // Attach dynamic panel synthetic scroll event

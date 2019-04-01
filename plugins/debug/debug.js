@@ -11,9 +11,6 @@
             gid: 3
         });
 
-        // Initializes isTracing to false the first time preview is loaded or when refresh is clicked
-        $axure.messageCenter.setState("isTracing", false);
-
         generateDebug();
 
         $('#variablesClearLink').click(clearvars_click);
@@ -94,9 +91,9 @@
 
         // bind to the page load
         $axure.page.bind('load.debug', function () {
-            var isActive = $axure.messageCenter.getState("isTracing");
-            $axure.messageCenter.setState("isTracing", isActive);
-
+            var traceStr = $axure.player.getHashStringVar(TRACE_VAR_NAME);
+            if (traceStr.length > 0) $axure.messageCenter.setState("isTracing", true);
+            else $axure.messageCenter.setState("isTracing", false);
             $axure.messageCenter.postMessage('getGlobalVariables', '');
 
             return false;
@@ -124,6 +121,7 @@
             $('#traceToggle').click(stoptrace_click);
             $('#traceToggle').show();
             console.log("starting trace");
+            $axure.player.setVarInCurrentUrlHash(TRACE_VAR_NAME, 1);
         }
 
         function stoptrace_click(event) {
@@ -133,6 +131,7 @@
             $('#traceToggle').off("click");
             $('#traceToggle').click(starttrace_click);
             console.log("stopping trace");
+            $axure.player.deleteVarFromCurrentUrlHash(TRACE_VAR_NAME);
         }
     });
 

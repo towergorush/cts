@@ -1,4 +1,4 @@
-﻿(function () {
+﻿$axure.internal(function ($ax) {
     if ((IOS && SAFARI) || SHARE_APP) {
         var outerHtml = document.documentElement;
         outerHtml.id = 'ios-safari';
@@ -65,5 +65,24 @@
         $('#ios-safari-html').scroll(function () {
             $axure.updateWindowInfo();
         });
+        
+        var scrollStartY;
+        var maxScrollY
+        var touchStart;
+        $axure('*').each(function (obj, element) {
+            if (obj && obj.scrollbars && obj.scrollbars.toLowerCase() != 'none') {
+                $('#' + element).on('touchstart', function (e) {
+                    touchStart = e.pageY;
+                    var stateId = $ax.visibility.GetPanelState($('#' + element).attr('id'));
+                    scrollStartY = $('#' + stateId).scrollTop();
+                    maxScrollY = $('#' + stateId)[0].scrollHeight - $('#' + stateId).height();
+                });
+
+                $('#' + element).on('touchmove', function (e) {
+                    if (scrollStartY == 0 && e.pageY > touchStart) e.preventDefault();
+                    if (scrollStartY == maxScrollY && e.pageY < touchStart) e.preventDefault();
+                });
+            }
+        });        
     }
-})();
+});

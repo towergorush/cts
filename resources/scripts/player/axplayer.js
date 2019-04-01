@@ -8,6 +8,7 @@ var SCALE_VAR_NAME = 'sc';
 var DIM_VAR_NAME = 'dm';
 var ROT_VAR_NAME = 'r';
 var CLOUD_VAR_NAME = 'cl';
+var TRACE_VAR_NAME = 'tr';
 var RP_VERSION = 9;
 var lastLeftPanelWidth = 220;
 var lastRightPanelWidth = 220;
@@ -370,7 +371,7 @@ var iphoneXFirstPass = true;
 
         if (isMobileMode()) {
             $container.addClass('mobileMode');
-            $('.noDiscussionText span').text('Comments added in Axure Share will appear here');
+            $('.noDiscussionText span').text('Comments added in Axure Cloud will appear here');
         } else {
             $container.removeClass('mobileMode');
             $('.noDiscussionText span').text('Either select the button above to post to a location on the page, or use the field to post without location.');
@@ -992,15 +993,6 @@ var iphoneXFirstPass = true;
             prevScaleN: prevScaleN
         };
         repositionPinsOnScaleChange(mainPanelScale);
-
-        if (scaleVal == '0') {
-            //Remove view in hash string if one is set
-            $axure.player.deleteVarFromCurrentUrlHash(SCALE_VAR_NAME);
-        } else if (typeof scaleVal !== 'undefined') {
-            //Set current view in hash string so that it can be maintained across reloads
-            $axure.player.setVarInCurrentUrlHash(SCALE_VAR_NAME, scaleVal);
-        }
-
         repositionClippingBoundsScroll();
 
         if (scaleVal == '0' && clipToView) $('#mainPanel').css('overflow', 'auto');
@@ -1240,7 +1232,7 @@ var iphoneXFirstPass = true;
         return [
             '<div class="axClearMsgBubble_Player axureLoginBubble_Player">',
             '   <div class="axureLoginBubbleContainer_Player">',
-            '       <span style="font-weight: bold; font-size: 10px;">Login into your Axure Share account</span>',
+            '       <span style="font-weight: bold; font-size: 10px;">Login into your Axure Cloud account</span>',
             '       <input type="text" autocapitalize="none" name="email" class="axureEmail" style="margin-top: 7px;"/>',
             '       <input name="password" autocapitalize="none" class="axurePassword" />',
             '       <div class="feedbackGreenBtn_Player">LOG IN</div>',

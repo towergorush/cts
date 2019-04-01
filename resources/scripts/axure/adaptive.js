@@ -340,22 +340,23 @@
 
         if(!images) return undefined;
 
+        var scriptId = $ax.repeater.getScriptIdFromElementId(id);
         // first check all the images for this state
         for(var i = viewIdChain.length - 1; i >= 0; i--) {
             var viewId = viewIdChain[i];
-            var img = images[id + "~" + state + "~" + viewId];
+            var img = images[scriptId + "~" + state + "~" + viewId];
             if(!img) img = images[state + "~" + viewId];
             if(img) return img;
         }
         // check for the default state style
-        var defaultStateImage = images[id + "~" + state + "~"];
+        var defaultStateImage = images[scriptId + "~" + state + "~"];
         if(!defaultStateImage) defaultStateImage = images[state + "~"];
         if(defaultStateImage) return defaultStateImage;
 
         if(doNotProgress) return undefined;
 
         state = $ax.style.progessState(state);
-        if(state) return _matchImage(id, images, viewIdChain, state);
+        if (state) return _matchImage(scriptId, images, viewIdChain, state);
 
         // SHOULD NOT REACH HERE! NORMAL SHOULD ALWAYS CATCH AT THE DEFAULT!
         return images['normal~']; // this is the default
@@ -380,8 +381,13 @@
     };
 
     var _getAdaptiveView = function(winWidth, winHeight) {
-        var _isViewOneGreaterThanTwo = function(view1, view2) {
-            return view1.size.width > view2.size.width || (view1.size.width == view2.size.width && view1.size.height > view2.size.height);
+        var _isViewOneGreaterThanTwo = function (view1, view2, winHeight) {
+            if (view1.size.width > view2.size.width) return true;
+            if (view1.size.width == view2.size.width) {
+                if (view2.size.height <= winHeight) return view1.size.height > view2.size.height && view1.size.height <= winHeight;
+                else return view1.size.height < view2.size.height;
+            }
+            return false;
         };
 
         var _isViewOneLessThanTwo = function(view1, view2) {
@@ -413,15 +419,13 @@
         for(var i = 0; i < _enabledViews.length; i++) {
             var view = _enabledViews[i];
             if(_isWindowWidthGreaterThanViewWidth(view, winWidth, winHeight)) {
-                if(!greater || _isViewOneGreaterThanTwo(view, greater)) greater = view;
+                if(!greater || _isViewOneGreaterThanTwo(view, greater, winHeight)) greater = view;
             }
             if(_isWindowWidthLessThanViewWidth(view, winWidth, winHeight)) {
                 if(!less || _isViewOneLessThanTwo(view, less)) less = view;
             }
         }
         return greater || less;
-
-        //return less || greater;
     };
 
     var _isAdaptiveInitialized = function() {

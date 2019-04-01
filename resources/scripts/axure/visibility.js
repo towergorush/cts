@@ -357,8 +357,14 @@
             completeTotal = 1;
             var flipdegree;
 
-            var originForUpOrDown = '100% ' + containerHeight / 2 + 'px';
-            if(options.value) {
+            var originForFlip = containerWidth / 2 + 'px ' + containerHeight / 2 + 'px';
+            if (options.value) {
+                innerContainer.css({
+                    '-webkit-transform-origin': originForFlip,
+                    '-ms-transform-origin': originForFlip,
+                    'transform-origin': originForFlip,
+                });
+
                 //options.value == true means in or show, note to get here, the element must be currently hidden to show,
                 // we need to first flip it +/- 90deg without animation (180 if we want to show the back of the flip)
                 switch(options.direction) {
@@ -369,11 +375,6 @@
                         break;
                     case 'up':
                     case 'down':
-                        innerContainer.css({
-                            '-webkit-transform-origin': originForUpOrDown,
-                            '-ms-transform-origin': originForUpOrDown,
-                            'transform-origin': originForUpOrDown,
-                        });
                         _setRotateTransformation(innerContainer, _getRotateString(false, options.direction === 'up', options.showFlipBack));
                         flipdegree = 'rotateX(0deg)';
                         break;
@@ -413,6 +414,11 @@
                 if(preserveScroll) _tryResumeScrollForDP(childId);
                 _setRotateTransformation(innerContainer, flipdegree, containerDiv, onFlipShowComplete, options.duration, true);
             } else { //hide or out
+                innerContainer.css({
+                    '-webkit-transform-origin': originForFlip,
+                    '-ms-transform-origin': originForFlip,
+                    'transform-origin': originForFlip,
+                });
                 switch(options.direction) {
                     case 'right':
                     case 'left':
@@ -420,12 +426,6 @@
                         break;
                     case 'up':
                     case 'down':
-                        //_setRotateTransformation(wrapped, 'rotateX(0deg)');
-                        innerContainer.css({
-                            '-webkit-transform-origin': originForUpOrDown,
-                            '-ms-transform-origin': originForUpOrDown,
-                            'transform-origin': originForUpOrDown,
-                        });
                         flipdegree = _getRotateString(false, options.direction !== 'up', options.showFlipBack);
                         break;
                 }
@@ -536,6 +536,7 @@
         };
 
         if(useAnimationFrame) {
+            if (FIREFOX) $('body').hide().show(0); //forces FF to render the animation            
             requestAnimationFrame(function() {
                 elementsToSet.css(trasformCss);
             });
@@ -1200,7 +1201,8 @@
         //return _movedIds[$ax.repeater.createElementId(scriptId, itemId)];
     };
 
-    $ax.visibility.setMovedLocation = function(scriptId, left, top) {
+    $ax.visibility.setMovedLocation = function (scriptId, left, top) {
+        if ($jobj(scriptId).css('position') == 'fixed') return;
         _movedIds[scriptId] = { left: left, top: top };
     };
 
