@@ -1,0 +1,54 @@
+﻿body {
+  margin:0px;
+  background-image:none;
+  position:relative;
+  left:-95px;
+  width:559px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:left;
+}
+.form_sketch {
+  border-color:transparent;
+  background-color:transparent;
+}
+#base {
+  position:absolute;
+  z-index:0;
+}
+#u3751_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:559px;
+  height:548px;
+  background:inherit;
+  background-color:rgba(242, 242, 242, 1);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+}
+#u3751 {
+  border-width:0px;
+  position:absolute;
+  left:95px;
+  top:46px;
+  width:559px;
+  height:548px;
+  display:flex;
+}
+#u3751 .text {
+  position:absolute;
+  align-self:center;
+  padding:10px 10px 10px 20px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u3751_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
