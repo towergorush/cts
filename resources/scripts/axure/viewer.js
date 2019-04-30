@@ -188,6 +188,10 @@ $axure.internal(function ($ax) {
         return { 'id': id, 'rect': rect, 'style': style };
     }
 
+    $axure.isIdVisible = function (id) {
+        return id ? $ax.visibility.IsIdVisible(id) : false;
+    }
+
     var _getElementIdFromTarget = function (target) {
         var targetId = target.id;
         var jTarget = $(target);

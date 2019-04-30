@@ -13,9 +13,9 @@ $axure.internal(function($ax) {
 //            if($ax.visibility.IsVisible(submenuElement) && submenuElement.style.display !== 'none') return;
             $ax.visibility.SetIdVisible(subMenuId, true);
             $ax.legacy.BringToFront(subMenuId);
-            $submenudiv.find('.menu_item').each(function() {
-                $ax.style.updateTextAlignmentForVisibility($ax.GetTextPanelId($(this).attr('id')));
-            });
+            //$submenudiv.find('.menu_item').each(function() {
+            //    $ax.style.updateTextAlignmentForVisibility($ax.GetTextPanelId($(this).attr('id')));
+            //});
             _fireEventForSubmenu(subMenuId, "onShow");
 
         }).mouseleave(function (e) {

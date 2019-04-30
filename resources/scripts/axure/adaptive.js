@@ -324,6 +324,10 @@
         // this style INCLUDES the object's my style
         var compoundStyle = $.extend({}, diagramObject.style, adaptiveStyle);
 
+        if (diagramObject.owner.type == 'Axure:Master' && diagramObject.adaptiveStyles) {
+            adaptiveStyle = $ax.style.computeFullStyle(elementId, state, viewId);
+        }
+
         if(!diagramObject.isContained) {
             $ax.style.setAdaptiveStyle(elementId, adaptiveStyle);
         }
@@ -575,17 +579,21 @@
         return _isDeviceMode;
     }
     
-    var _removeNiceScroll = $ax.adaptive.removeNiceScroll = function ($container) {
-        $container.scrollLeft(0);
-        $container.scrollTop(0);
+    var _removeNiceScroll = $ax.adaptive.removeNiceScroll = function ($container, blockResetScroll) {
+        if (!blockResetScroll) {
+            $container.scrollLeft(0);
+            $container.scrollTop(0);
+        }
         $container.getNiceScroll().remove();
         //clean up nicescroll css
         if (IE) $container.css({ '-ms-overflow-y': '', 'overflow-y': '', '-ms-overflow-style': '', '-ms-touch-action': '' });
     }
 
-    var _addNiceScroll = $ax.adaptive.addNiceScroll = function ($container, options) {
-        $container.scrollLeft(0);
-        $container.scrollTop(0);
+    var _addNiceScroll = $ax.adaptive.addNiceScroll = function ($container, options, blockResetScroll) {
+        if (!blockResetScroll) {
+            $container.scrollLeft(0);
+            $container.scrollTop(0);
+        }
         $container.niceScroll(options);
         //clean up nicescroll css so child scroll containers show scrollbars in IE
         if (IE) $container.css({ '-ms-overflow-y': '', '-ms-overflow-style': '' });

@@ -1213,7 +1213,7 @@
         if(style.strikethrough !== undefined) {
             var index = textDecoration.length;
             if(style.strikethrough) textDecoration[index] ='line-through';
-            else textDecoration[0] = 'none';
+            else if(index == 0) textDecoration[0] = 'none';
         } 
         if (textDecoration.length > 0) {
             var decorationLineUp = "";
@@ -1230,6 +1230,7 @@
         if(style.lineSpacing) toApply.allProps.lineHeight = toApply.parProps.lineHeight = style.lineSpacing;
         if(style.textShadow) toApply.allProps.textShadow = toApply.parProps.textShadow = _getCssShadow(style.textShadow);
         if (style.letterCase) toApply.allProps.textTransform = toApply.parProps.textTransform = style.letterCase;
+        if (style.characterSpacing) toApply.allProps.letterSpacing = toApply.runProps.letterSpacing = style.characterSpacing;
 
         return toApply;
     };

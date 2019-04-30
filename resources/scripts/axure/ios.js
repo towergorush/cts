@@ -71,6 +71,8 @@
         var touchStart;
         $axure('*').each(function (obj, element) {
             if (obj && obj.scrollbars && obj.scrollbars.toLowerCase() != 'none') {
+                if (obj.scrollbars == 'horizontalAsNeeded') return;
+
                 $('#' + element).on('touchstart', function (e) {
                     touchStart = e.pageY;
                     var stateId = $ax.visibility.GetPanelState($('#' + element).attr('id'));
@@ -79,6 +81,7 @@
                 });
 
                 $('#' + element).on('touchmove', function (e) {
+                    if (maxScrollY <= 0) return false;
                     if (scrollStartY == 0 && e.pageY > touchStart) e.preventDefault();
                     if (scrollStartY == maxScrollY && e.pageY < touchStart) e.preventDefault();
                 });

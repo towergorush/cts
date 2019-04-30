@@ -207,7 +207,6 @@ $axure.internal(function ($ax) {
     };
 
     var _getCanClick = function() {
-        if(!$ax.features.supports.mobile) return true;
         var endScroll = [$(window).scrollLeft(), $(window).scrollTop()];
         return _canClick && _startScroll[0] == endScroll[0] && _startScroll[1] == endScroll[1];
     };
@@ -892,12 +891,9 @@ $axure.internal(function ($ax) {
                 });
             }
 
-            if($ax.features.supports.mobile) {
-                $element.bind($ax.features.eventNames.mouseDownName, function() { _setCanClick(true); });
-
-                if (isDynamicPanel) {
-                    $element.scroll(function() { _setCanClick(false); });
-                }
+            $element.bind($ax.features.eventNames.mouseDownName, function() { _setCanClick(true); });
+            if (isDynamicPanel) {
+                $element.children().scroll(function () { _setCanClick(false); });
             }
 
             //initialize tree node cursors to default so they will override their parent
@@ -1941,12 +1937,11 @@ $axure.internal(function ($ax) {
 
             $win.bind($ax.features.eventNames.mouseDownName, _updateMouseLocation);
             $win.bind($ax.features.eventNames.mouseUpName, function(e) { _updateMouseLocation(e, true); });
-
-            $win.scroll(function() { _setCanClick(false); });
-            $win.bind($ax.features.eventNames.mouseDownName, (function() {
-                _setCanClick(true);
-            }));
         }
+        
+        $win.scroll(function () { _setCanClick(false); });
+        $win.bind($ax.features.eventNames.mouseDownName, function () { _setCanClick(true); });
+
         $win.bind($ax.features.eventNames.mouseMoveName, _updateMouseLocation);
         $win.scroll($ax.flyoutManager.reregisterAllFlyouts);
 

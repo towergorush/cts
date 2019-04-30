@@ -975,7 +975,7 @@ $axure.internal(function($ax) {
             var widgetType = $ax.getTypeFromElementId(firstId);
             if ($ax.public.fn.IsImageBox(widgetType) || $ax.public.fn.IsVector(widgetType)
                 || $ax.public.fn.IsLayer(widgetType)) return !$ax.style.IsWidgetDisabled(firstId);
-            else return this.jQuery().first().not(':disabled').length > 0;
+            else return this.jQuery().children(':disabled').length <= 0;
         } else {
             var elementIds = this.getElementIds();
 
