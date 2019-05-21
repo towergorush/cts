@@ -4125,3 +4125,35 @@
   white-space:nowrap;
   text-transform:none;
 }
+#u8844_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:200px;
+  height:100px;
+}
+#u8844 {
+  border-width:0px;
+  position:absolute;
+  left:30px;
+  top:340px;
+  width:200px;
+  height:100px;
+  display:flex;
+  font-size:14px;
+  color:#FF3399;
+  text-align:left;
+}
+#u8844 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 20px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u8844_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
