@@ -1832,7 +1832,7 @@ $axure.internal(function ($ax) {
             if(_callFilterCheck(callFilter, $ax.constants.PAGE_TYPE)) {
                 //if scrolling, set direction, later master will know
                 if(eventName === "onScroll") {
-                    var currentScrollTop = $(window).scrollTop();
+                    var currentScrollTop = ((SAFARI && IOS) || SHARE_APP) ? $('#ios-safari-html').scrollTop() : $(window).scrollTop();
                     _event.windowScrollingUp = currentScrollTop < lastScrollTop;
                     _event.windowScrollingDown = currentScrollTop > lastScrollTop;
                 }
