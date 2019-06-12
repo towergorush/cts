@@ -168,6 +168,27 @@ $axure.internal(function ($ax) {
         return undefined;
     }
 
+    $axure.getListOfIdAndRectAtLoc = function (data) {
+        var domElements = document.elementsFromPoint(data.x, data.y);
+        if (!domElements || !domElements.length) return undefined;
+
+        const elements = [];
+
+        domElements.forEach(domElement => {
+            var jObj = _getElementIdFromTarget(domElement);
+            if (jObj.length > 0) {
+                var id = jObj.attr('id');
+                var axObj = $ax('#' + id);
+                var rect = axObj.pageBoundingRect();
+                if ((elements.findIndex((x) => x.id === id)) < 0) {
+                    elements.push({ 'id': id, 'rect': rect });
+                }
+            }
+        });
+
+        return elements;
+    }
+
     $axure.getIdRectAndStyleAtLoc = function(data) {
         var element = document.elementFromPoint(data.x, data.y);
         if (!element) return undefined;
@@ -180,6 +201,25 @@ $axure.internal(function ($ax) {
         return undefined;
     }
 
+    $axure.getListOfIdRectAndStyleAtLoc = function (data) {
+        var domElements = document.elementsFromPoint(data.x, data.y);
+        if (!domElements || !domElements.length) return undefined;
+
+        const elements = [];
+
+        domElements.forEach(domElement => {
+            var jObj = _getElementIdFromTarget(domElement);
+            if (jObj.length > 0) {
+                var id = jObj.attr('id');
+                if ((elements.findIndex((x) => x.id === id)) < 0) {
+                    elements.push($axure.getRectAndStyleById(id));
+                }
+            }
+        });
+
+        return elements;
+    }
+
     $axure.getRectAndStyleById = function (id) {
         var axObj = $ax('#' + id);
         var rect = axObj.pageBoundingRect();
@@ -190,6 +230,15 @@ $axure.internal(function ($ax) {
 
     $axure.isIdVisible = function (id) {
         return id ? $ax.visibility.IsIdVisible(id) : false;
+    }
+
+    $axure.getParentElementById = function (elementId) {
+        if (!elementId) return undefined;
+        var parentId = $ax.getLayerParentFromElementId(elementId);
+        if (!parentId) {
+            return undefined;
+        }
+        return $axure.getRectAndStyleById(parentId);
     }
 
     var _getElementIdFromTarget = function (target) {
