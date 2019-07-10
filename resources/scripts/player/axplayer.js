@@ -545,13 +545,22 @@ var iphoneXFirstPass = true;
             }
             $('.rightPanel').css('height', '');
             if ($('.rightPanel').is(':visible')) {
-                var newWidth = Math.min($(window).width() - lastRightPanelWidthDefault, $('.rightPanel').width(), $(window).width() - $('.leftPanel').width());
+                var lastRightPanelWidthDefaultSub = ($(window).width() - lastRightPanelWidthDefault || 0);
+                var rightPanelWidth = ($('.rightPanel').width() || 0);
+                var leftPanelPanelWidthSub = ($(window).width() - $('.leftPanel').width()) || 0;
+
+                var newWidth = Math.min(lastRightPanelWidthDefaultSub, rightPanelWidth, leftPanelPanelWidthSub);
                 lastRightPanelWidth = Math.max(lastRightPanelWidthDefault, newWidth);
                 $('.rightPanel').width(lastRightPanelWidth ? lastRightPanelWidth : lastRightPanelWidthDefault);
                 $('#rsplitbar').css('left', $(window).width() - $('.rightPanel').width());
             }
             if ($('.leftPanel').is(':visible')) {
-                var newWidth = Math.min($(window).width() - lastLeftPanelWidthDefault, $('.leftPanel').width(), $(window).width() - $('.rightPanel').width());
+                var lastLeftPanelWidthSub = ($(window).width() - lastLeftPanelWidthDefault || 0);
+                var leftPanelWidth = ($('.leftPanel').width() || 0);
+                var rightPanelWidthSub = ($(window).width() - $('.rightPanel').width()) || 0;
+
+                var newWidth = Math.min(lastLeftPanelWidthSub, leftPanelWidth, rightPanelWidthSub);
+
                 lastLeftPanelWidth = Math.max(lastLeftPanelWidthDefault, newWidth);
                 $('.leftPanel').width(lastLeftPanelWidth ? lastLeftPanelWidth : lastLeftPanelWidthDefault);
                 $('#lsplitbar').css('left', $('.leftPanel').width() - 4);
@@ -917,6 +926,7 @@ var iphoneXFirstPass = true;
         var h = dim[1] != '0' ? dim[1] : '';
 
         var scaleVal = $('.vpScaleOption').find('.selectedRadioButton').parent().attr('val');
+        var selectedScaleValue = scaleVal;
         $axure.player.noFrame = false;
         if (h && scaleVal == 1) $axure.player.noFrame = true;
 
@@ -1022,7 +1032,9 @@ var iphoneXFirstPass = true;
             clipToView: clipToView
         };
         $axure.messageCenter.postMessage('getScale', vpScaleData);
-
+        $axure.messageCenter.postMessage('cloud_ScaleValueChanged', {
+            scale: selectedScaleValue,
+        });
         if (scaleVal == '0' && clipToView) $('#mainPanel').css('overflow', 'auto');
         else $('#mainPanel').css('overflow', '');
     }

@@ -1087,7 +1087,7 @@
     };
 
     $ax.visibility.GetPanelStateCount = function(id) {
-        return $ax.visibility.getRealChildren($jobj(id).children()).length;
+        return $ax.visibility.getRealChildren($jobj(id).children()).filter("[id*='_state']").length;
     };
 
     var _bringPanelStateToFront = function (dpId, stateId, oldStateId, oldInFront) {

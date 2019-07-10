@@ -316,7 +316,7 @@ $axure.internal(function ($ax) {
 
         eventNesting += 1;
 
-        if(!_getCanClick() && (eventDescription == 'OnClick' || eventDescription == 'OnPageClick')) return;
+        if (!synthetic && !_getCanClick() && (eventDescription == 'OnClick' || eventDescription == 'OnPageClick')) return;
         // If you are supposed to suppress, do that right away.
         if(suppressedEventStatus[eventDescription]) {
             return;
