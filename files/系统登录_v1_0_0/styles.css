@@ -3,7 +3,7 @@
   background-image:none;
   position:relative;
   left:0px;
-  width:861px;
+  width:1441px;
   margin-left:auto;
   margin-right:auto;
   text-align:left;
@@ -27,8 +27,8 @@
 #u93 {
   border-width:0px;
   position:absolute;
-  left:-290px;
-  top:-44px;
+  left:0px;
+  top:0px;
   width:1441px;
   height:751px;
   display:flex;
@@ -45,4 +45,36 @@
   word-wrap:break-word;
   text-transform:none;
   visibility:hidden;
+}
+#u94_img {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:633px;
+  height:237px;
+}
+#u94 {
+  border-width:0px;
+  position:absolute;
+  left:808px;
+  top:818px;
+  width:633px;
+  height:237px;
+  display:flex;
+  font-size:14px;
+  color:#FF3399;
+  text-align:left;
+}
+#u94 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 2px 2px 20px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u94_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
 }
