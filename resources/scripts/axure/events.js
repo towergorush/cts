@@ -1319,9 +1319,11 @@ $axure.internal(function ($ax) {
                 }
 
                 $(document).off("mouseup", clearMouseDownIxStyle);
-                $("#" + _event.mouseDownObjectId).off("dragend", clearMouseDownIxStyle);
 
-                _event.mouseDownObjectId = '';
+                if(_event.mouseDownObjectId) {
+                    $("#" + _event.mouseDownObjectId).off("dragend", clearMouseDownIxStyle);
+                    _event.mouseDownObjectId = '';
+                }
                 if(!$ax.style.ObjHasMouseDown(elementId)) return;
 
                 $ax.style.SetWidgetMouseDown(elementId, false, e.checkMouseOver);

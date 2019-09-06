@@ -536,7 +536,7 @@
         };
 
         if(useAnimationFrame) {
-            if (FIREFOX) $('body').hide().show(0); //forces FF to render the animation            
+            if(FIREFOX || CHROME) $('body').hide().show(0); //forces FF to render the animation            
             requestAnimationFrame(function() {
                 elementsToSet.css(trasformCss);
             });
@@ -938,6 +938,8 @@
             css.perspective = '800px';
             css.webkitPerspective = "800px";
             css.mozPerspective = "800px";
+            //adding this to make Edge happy
+            css['transform-style'] = 'preserve-3d';
         } else css.overflow = 'hidden';
 
         //perspective on container will give us 3d effect when flip

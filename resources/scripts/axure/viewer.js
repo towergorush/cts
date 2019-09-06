@@ -154,6 +154,14 @@ $axure.internal(function ($ax) {
         }
     };
     
+    var getElementsFromPoint = function (x, y) {
+        var elementsFromPointFn = document.elementsFromPoint || document.msElementsFromPoint;
+        if (typeof elementsFromPointFn === "function") {
+            return elementsFromPointFn.bind(document)(x, y);
+        }
+        return [];
+    }
+
     $axure.getIdAndRectAtLoc = function (data) {
         var element = document.elementFromPoint(data.x, data.y);
         if (!element) return undefined;
@@ -169,19 +177,20 @@ $axure.internal(function ($ax) {
     }
 
     $axure.getListOfIdAndRectAtLoc = function (data) {
-        var domElements = document.elementsFromPoint(data.x, data.y);
-        if (!domElements || !domElements.length) return undefined;
+        var domElements = getElementsFromPoint(data.x, data.y);
+
+        if (!domElements || !domElements.length) return [];
 
         const elements = [];
-
-        domElements.forEach(domElement => {
+        
+        domElements.forEach(function (domElement) {
             var jObj = _getElementIdFromTarget(domElement);
             if (jObj.length > 0) {
                 var id = jObj.attr('id');
-                var axObj = $ax('#' + id);
+                var axObj = $ax('#' + id);                
                 var rect = axObj.pageBoundingRect();
-                if ((elements.findIndex((x) => x.id === id)) < 0) {
-                    elements.push({ 'id': id, 'rect': rect });
+                if (elements.findIndex(function (x) { return x.id === id }) < 0) {                    
+                    elements.push( { 'id': id, 'rect': rect } );
                 }
             }
         });
@@ -201,17 +210,18 @@ $axure.internal(function ($ax) {
         return undefined;
     }
 
-    $axure.getListOfIdRectAndStyleAtLoc = function (data) {
-        var domElements = document.elementsFromPoint(data.x, data.y);
-        if (!domElements || !domElements.length) return undefined;
+    $axure.getListOfIdRectAndStyleAtLoc = function(data) {
+        var domElements = getElementsFromPoint(data.x, data.y);
 
+        if (!domElements || !domElements.length) return [];
+        
         const elements = [];
-
-        domElements.forEach(domElement => {
+        
+        domElements.forEach(function (domElement) {
             var jObj = _getElementIdFromTarget(domElement);
             if (jObj.length > 0) {
                 var id = jObj.attr('id');
-                if ((elements.findIndex((x) => x.id === id)) < 0) {
+                if (elements.findIndex(function (x) { return x.id === id }) < 0) {                    
                     elements.push($axure.getRectAndStyleById(id));
                 }
             }
