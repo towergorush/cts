@@ -3,7 +3,7 @@
   background-image:none;
   position:relative;
   left:0px;
-  width:10px;
+  width:730px;
   margin-left:auto;
   margin-right:auto;
   text-align:left;
@@ -15,4 +15,107 @@
 #base {
   position:absolute;
   z-index:0;
+}
+#u95_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:730px;
+  height:530px;
+  background:inherit;
+  background-color:rgba(242, 242, 242, 1);
+  border:none;
+  border-radius:0px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-size:16px;
+  text-align:left;
+  line-height:22px;
+}
+#u95 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:730px;
+  height:530px;
+  display:flex;
+  font-size:16px;
+  text-align:left;
+  line-height:22px;
+}
+#u95 .text {
+  position:absolute;
+  align-self:center;
+  padding:2px 20px 2px 20px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u95_text {
+  border-width:0px;
+  word-wrap:break-word;
+  text-transform:none;
+}
+#u96 {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:0px;
+  height:0px;
+}
+#u97_div {
+  border-width:0px;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:113px;
+  height:25px;
+  background:inherit;
+  background-color:rgba(255, 255, 255, 1);
+  box-sizing:border-box;
+  border-width:1px;
+  border-style:solid;
+  border-color:rgba(24, 144, 255, 1);
+  border-radius:4px;
+  -moz-box-shadow:none;
+  -webkit-box-shadow:none;
+  box-shadow:none;
+  font-family:'PingFangSC-Regular', 'PingFang SC';
+  font-weight:400;
+  font-style:normal;
+  font-size:14px;
+  color:#1890FF;
+  text-align:left;
+  line-height:22px;
+}
+#u97 {
+  border-width:0px;
+  position:absolute;
+  left:309px;
+  top:481px;
+  width:113px;
+  height:25px;
+  display:flex;
+  font-family:'PingFangSC-Regular', 'PingFang SC';
+  font-weight:400;
+  font-style:normal;
+  font-size:14px;
+  color:#1890FF;
+  text-align:left;
+  line-height:22px;
+}
+#u97 .text {
+  position:absolute;
+  align-self:center;
+  padding:0px 16px 0px 16px;
+  box-sizing:border-box;
+  width:100%;
+}
+#u97_text {
+  border-width:0px;
+  white-space:nowrap;
+  text-transform:none;
 }
