@@ -184,7 +184,7 @@ $axure.internal(function ($ax) {
 
     };
 
-    var _descriptionToKey = { 'OnFocus': 'onFocus', 'OnLostFocus': 'onLostFocus' };
+    var _eventTypeToKey = { 'OnFocus': 'onFocus', 'OnLostFocus': 'onLostFocus' };
     var _createProxies = function(diagramObject, elementId) {
         var createFocus = _needsProxy(diagramObject, elementId, 'onFocus');
         var createLostFocus = _needsProxy(diagramObject, elementId, 'onLostFocus');
@@ -192,8 +192,8 @@ $axure.internal(function ($ax) {
         if(!createFocus && !createLostFocus) return;
 
         if(!diagramObject.interactionMap) diagramObject.interactionMap = {};
-        if(createFocus) diagramObject.interactionMap.onFocus = { proxy: true, description: 'OnFocus' };
-        if(createLostFocus) diagramObject.interactionMap.onLostFocus = { proxy: true, description: 'OnLostFocus' };
+        if(createFocus) diagramObject.interactionMap.onFocus = { proxy: true, eventType: 'OnFocus' };
+        if (createLostFocus) diagramObject.interactionMap.onLostFocus = { proxy: true, eventType: 'OnLostFocus' };
     }
 
     var preventDefaultEvents = ['OnContextMenu', 'OnKeyUp', 'OnKeyDown', 'OnPageContextMenu', 'OnPageKeyUp', 'OnPageKeyDown'];
@@ -206,7 +206,8 @@ $axure.internal(function ($ax) {
         if(_canClick) _startScroll = [$(window).scrollLeft(), $(window).scrollTop()];
     };
 
-    var _getCanClick = function() {
+    var _getCanClick = function () {
+        if(_startScroll.length == 0) return _canClick;
         var endScroll = [$(window).scrollLeft(), $(window).scrollTop()];
         return _canClick && _startScroll[0] == endScroll[0] && _startScroll[1] == endScroll[1];
     };
@@ -283,10 +284,10 @@ $axure.internal(function ($ax) {
     var eventNestingTime = new Date().getTime();
 
     var _handleEvent = $ax.event.handleEvent = function (elementId, eventInfo, axEventObject, skipShowDescriptions, synthetic) {
-        var eventDescription = axEventObject.description;
-        if(_enteredWidgets[elementId] && eventDescription == 'OnMouseEnter') return; // Suppress entering a widget when already in widget (ie only)
-        if(_isSuppressedEvent(elementId, eventDescription)) {
-            _removeSuppressedEvent(elementId, eventDescription);
+        var eventType = axEventObject.eventType;
+        if(_enteredWidgets[elementId] && eventType == 'OnMouseEnter') return; // Suppress entering a widget when already in widget (ie only)
+        if(_isSuppressedEvent(elementId, eventType)) {
+            _removeSuppressedEvent(elementId, eventType);
             return;
         }
 
@@ -294,7 +295,7 @@ $axure.internal(function ($ax) {
             var firingId = _widgetToFocusParent[elementId];
             if(firingId) {
                 var firingObj = $obj(firingId);
-                var nextEventObj = firingObj.interactionMap && firingObj.interactionMap[_descriptionToKey[eventDescription]];
+                var nextEventObj = firingObj.interactionMap && firingObj.interactionMap[_eventTypeToKey[eventType]];
                 if(!nextEventObj) nextEventObj = axEventObject;
                 _handleEvent(firingId, eventInfo, nextEventObj, skipShowDescriptions, synthetic);
             }
@@ -316,9 +317,9 @@ $axure.internal(function ($ax) {
 
         eventNesting += 1;
 
-        if (!synthetic && !_getCanClick() && (eventDescription == 'OnClick' || eventDescription == 'OnPageClick')) return;
+        if (!synthetic && !_getCanClick() && (eventType == 'OnClick' || eventType == 'OnPageClick')) return;
         // If you are supposed to suppress, do that right away.
-        if(suppressedEventStatus[eventDescription]) {
+        if(suppressedEventStatus[eventType]) {
             return;
         }
 
@@ -330,7 +331,7 @@ $axure.internal(function ($ax) {
         var axObj = $obj(elementId);
         var axObjLabel = axObj ? axObj.label : eventInfo.label;
         var axObjType = axObj ? axObj.friendlyType : eventInfo.friendlyType;
-        if (!skipShowDescriptions || eventDescription == 'OnPageLoad') postMessage('axEvent', { 'label': axObjLabel, 'type': axObjType, 'event': axEventObject });
+        if (!skipShowDescriptions || eventType == 'OnPageLoad') postMessage('axEvent', { 'label': axObjLabel, 'type': axObjType, 'event': axEventObject });
 
         var bubble = true;
         var showCaseDescriptions = !skipShowDescriptions && _shouldShowCaseDescriptions(axEventObject);
@@ -382,7 +383,7 @@ $axure.internal(function ($ax) {
             firingId = _widgetToFocusParent[elementId];
             if(firingId) {
                 firingObj = $obj(firingId);
-                nextEventObj = firingObj.interactionMap && firingObj.interactionMap[_descriptionToKey[axEventObject.description]];
+                nextEventObj = firingObj.interactionMap && firingObj.interactionMap[_eventTypeToKey[eventType]];
                 if(!nextEventObj) nextEventObj = axEventObject;
                 _handleEvent(firingId, eventInfo, nextEventObj, skipShowDescriptions, synthetic);
             }
@@ -390,8 +391,8 @@ $axure.internal(function ($ax) {
         }
 
         // Only trigger a supression if it handled this event
-        if(!bubble && suppressingEvents[eventDescription]) {
-            suppressedEventStatus[suppressingEvents[eventDescription]] = true;
+        if(!bubble && suppressingEvents[eventType]) {
+            suppressedEventStatus[suppressingEvents[eventType]] = true;
         }
 
         $ax.action.flushAllResizeMoveActions(eventInfo);
@@ -402,11 +403,11 @@ $axure.internal(function ($ax) {
         for(i = 0; i < repeaters.length; i++) $ax.repeater.refreshRepeater(repeaters[i], eventInfo);
 
         if(currentEvent && currentEvent.originalEvent) {
-            currentEvent.originalEvent.handled = !synthetic && !bubble && allowBubble.indexOf(eventDescription) == -1;
+            currentEvent.originalEvent.handled = !synthetic && !bubble && allowBubble.indexOf(eventType) == -1;
             //currentEvent.originalEvent.donotdrag = currentEvent.donotdrag || (!bubble && eventDescription == 'OnMouseDown');
 
             // Prevent default if necessary
-            if(currentEvent.originalEvent.handled && preventDefaultEvents.indexOf(eventDescription) != -1) {
+            if (currentEvent.originalEvent.handled && preventDefaultEvents.indexOf(eventType) != -1) {
                 currentEvent.preventDefault();
             }
         }
@@ -1016,11 +1017,23 @@ $axure.internal(function ($ax) {
             var map = dObj.interactionMap;
             // Attach synthetic drag and swipe events
             if(map && (map.onDragStart || map.onDrag || map.onDragDrop || map.onSwipeLeft || map.onSwipeRight || map.onSwipeUp || map.onSwipeDown)) {
-                $element.bind($ax.features.eventNames.mouseDownName,
-                    function (e) {
-                        if (!e.originalEvent.donotdrag) $ax.registerTouchCount(e);
-                        $ax.drag.StartDragWidget(e.originalEvent, elementId);
-                    });
+                if(isDynamicPanel) {
+                    var diagrams = dObj.diagrams;
+                    for(var i = 0; i < diagrams.length; i++) {
+                        var panelId = $ax.repeater.applySuffixToElementId(elementId, '_state' + i);
+                        var panel = document.getElementById(panelId);
+                        panel.addEventListener($ax.features.eventNames.mouseDownName, function (e) {
+                            $ax.drag.StartDragWidget(e, elementId);
+                        });
+                    }
+                } else {
+                    $element.bind($ax.features.eventNames.mouseDownName,
+                        function (e) {
+                            $ax.drag.StartDragWidget(e.originalEvent, elementId);
+                            // if (!e.originalEvent.donotdrag) $ax.registerTouchCount(e);
+                            // $ax.drag.StartDragWidget(e.originalEvent, elementId);
+                        });
+                }
             }
 
             // Attach dynamic panel synthetic scroll event
@@ -1710,28 +1723,6 @@ $axure.internal(function ($ax) {
     $ax.event.HasClick = function (diagramObject) {
         var map = diagramObject.interactionMap;
         return map && map.onClick;
-    };
-
-    var _tryFireCheckedChanged = $ax.event.TryFireCheckChanged = function(elementId, value) {
-        var isRadio = $ax.public.fn.IsRadioButton($obj(elementId).type);
-        if(isRadio) {
-            if(!value) {
-                $ax.updateRadioButtonSelected($jobj($ax.INPUT(elementId)).attr('name'), undefined);
-            } else {
-                var last = $ax.updateRadioButtonSelected($jobj($ax.INPUT(elementId)).attr('name'), elementId);
-
-                // If no change, this should not fire
-                if(last == elementId) return;
-
-                // Initially selecting one, last may be undefined
-                if(last) {
-                    //here last is the previouse selected elementid
-                    $ax.event.raiseSelectedEvents(last, false);
-                }
-            }
-        }
-
-        $ax.event.raiseSelectedEvents(elementId, value);
     };
 
     //onload everything now, not only dp and master

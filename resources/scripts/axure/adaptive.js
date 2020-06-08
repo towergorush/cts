@@ -324,9 +324,9 @@
         // this style INCLUDES the object's my style
         var compoundStyle = $.extend({}, diagramObject.style, adaptiveStyle);
 
-        if (diagramObject.owner.type == 'Axure:Master' && diagramObject.adaptiveStyles) {
-            adaptiveStyle = $ax.style.computeFullStyle(elementId, state, viewId);
-        }
+        // if (diagramObject.owner.type == 'Axure:Master' && diagramObject.adaptiveStyles) {
+        //     adaptiveStyle = $ax.style.computeFullStyle(elementId, state, viewId);
+        // }
 
         if(!diagramObject.isContained) {
             $ax.style.setAdaptiveStyle(elementId, adaptiveStyle);
@@ -344,19 +344,35 @@
 
         if(!images) return undefined;
 
-        var scriptId = $ax.repeater.getScriptIdFromElementId(id);
+        let scriptId = $ax.repeater.getScriptIdFromElementId(id);
+        
+        if(state == 'disabled' && $ax.style.IsWidgetSelected(id) || state == 'selected' && $ax.style.IsWidgetDisabled(id)) {
+            let diagramObject = $ax.getObjectFromElementId(id);
+            if(diagramObject && $ax.public.fn.IsSelectionButton(diagramObject.type)) {
+                var selectedDisabled = $ax.constants.SELECTED_DISABLED;
+            }
+        }
+
         // first check all the images for this state
-        for(var i = viewIdChain.length - 1; i >= 0; i--) {
-            var viewId = viewIdChain[i];
-            var img = images[scriptId + "~" + state + "~" + viewId];
-            if(!img) img = images[state + "~" + viewId];
-            if(img) return img;
+        for(let i = viewIdChain.length - 1; i >= 0; i--) {
+            let viewId = viewIdChain[i];
+            if(selectedDisabled) {
+                let img = findImage(images, scriptId, selectedDisabled, viewId)
+                if(img) return img;
+            } else {
+                let img = findImage(images, scriptId, state, viewId);
+                if (img) return img;
+            }
         }
         // check for the default state style
-        var defaultStateImage = images[scriptId + "~" + state + "~"];
-        if(!defaultStateImage) defaultStateImage = images[state + "~"];
-        if(defaultStateImage) return defaultStateImage;
-
+        if(selectedDisabled) {
+            let defaultStateImage = findImage(images, scriptId, selectedDisabled)
+            if(defaultStateImage) return defaultStateImage;
+        } else {
+            let defaultStateImage = findImage(images, scriptId, state);
+            if (defaultStateImage) return defaultStateImage;
+        }
+        
         if(doNotProgress) return undefined;
 
         state = $ax.style.progessState(state);
@@ -365,6 +381,16 @@
         // SHOULD NOT REACH HERE! NORMAL SHOULD ALWAYS CATCH AT THE DEFAULT!
         return images['normal~']; // this is the default
     };
+    
+    let findImage = function(images, scriptId, state, viewId) {
+        if(!images) return undefined;
+
+        if(!viewId) viewId = "";
+        let withScript = scriptId + "~" + state + "~" + viewId;
+        let img = images[withScript];
+        if(!img) img = images[state + "~" + viewId];
+        return img;
+    }
 
     var _matchImageCompound = function(diagramObject, id, viewIdChain, state) {
         var images = [];
@@ -441,7 +467,7 @@
         //If the adaptive plugin hasn't been initialized yet then 
         //save the view to load so that it can get set when initialize occurs
         if (message == 'switchAdaptiveView') {
-            if (window.name != 'mainFrame') return;
+            if (!$axure.utils.isInPlayer()) return;
 
             var href = window.location.href.split('#')[0];
             var lastSlash = href.lastIndexOf('/');
@@ -454,14 +480,14 @@
                 _initialViewToLoad = view;
             } else _handleLoadViewId(view);
         } else if (message == 'setAdaptiveViewForSize') {
-            if (window.name != 'mainFrame') return;
+            if (!$axure.utils.isInPlayer()) return;
 
             _autoIsHandledBySidebar = true;
             if(!_isAdaptiveInitialized()) {
                 _initialViewSizeToLoad = data;
             } else _handleSetViewForSize(data.width, data.height);
         } else if (message == 'getScale') {
-            if (window.name != 'mainFrame') return;
+            if (!$axure.utils.isInPlayer()) return;
 
             var prevScaleN = data.prevScaleN;
             var newScaleN = 1;
@@ -472,13 +498,12 @@
 
             if (data.scale != 0) {
                 var adjustScrollScale = false;
-                if ($('html').getNiceScroll().length == 0 && !MOBILE_DEVICE && !SAFARI) {
+                if ($('html').getNiceScroll().length == 0 && !MOBILE_DEVICE) {
                     //adding nicescroll so width is correct when getting scale
                     _addNiceScroll($('html'), { emulatetouch: false, horizrailenabled: false });
                     adjustScrollScale = true;
                 }
-                if (!MOBILE_DEVICE && SAFARI) _removeNiceScroll($('html'));
-
+                
                 $('html').css('overflow-x', 'hidden');
 
                 var bodyWidth = $body.width();
@@ -521,7 +546,7 @@
             $axure.messageCenter.postMessage('setContentScale', contentScale);
 
         } else if (message == 'setDeviceMode') {
-            if (window.name != 'mainFrame') return;
+            if (!$axure.utils.isInPlayer()) return;
 
             _isDeviceMode = data.device;
             if (data.device) {
@@ -598,6 +623,16 @@
         //clean up nicescroll css so child scroll containers show scrollbars in IE
         if (IE) $container.css({ '-ms-overflow-y': '', '-ms-overflow-style': '' });
         if(IOS) $container.css({ 'overflow-y': ''});
+    }
+
+    //given the element, find the container that's using nice scroll (including the element itself)
+    $ax.adaptive.getNiceScrollContainer = function(element) {
+        var parent = element;
+        while(parent) {
+            if($(parent).getNiceScroll().length > 0) return parent;
+            parent = parent.parentElement;
+        }
+        return undefined;
     }
 
 
